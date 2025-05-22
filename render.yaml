@@ -3,7 +3,7 @@ services:
     name: Tako-frontend
     env: node
     branch: main
-    buildCommand: "npm install && npm run render-build"
+    buildCommand: "npm install && npx vite build"
     startCommand: "npx vite preview"
     publishPath: "frontend/frontend/dist"
     plan: free
