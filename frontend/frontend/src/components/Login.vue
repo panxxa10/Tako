@@ -15,7 +15,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
+import api from '../api'  // importa tu cliente axios con baseURL configurada
 import { useRouter } from 'vue-router'
 
 const email = ref('')
@@ -26,7 +26,7 @@ const router = useRouter()
 const handleLogin = async () => {
   error.value = ''
   try {
-    const { data } = await axios.post('http://localhost:5000/api/auth/login', { email: email.value, password: password.value })
+    const { data } = await api.post('/api/auth/login', { email: email.value, password: password.value })
     localStorage.setItem('token', data.token)
     router.push('/calendar')
   } catch (e) {
@@ -34,6 +34,7 @@ const handleLogin = async () => {
   }
 }
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');

@@ -57,7 +57,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
+import api from '../api'  // Importa tu cliente axios configurado con baseURL
 import StickerNotification from '../components/StickerNotification.vue'
 
 const lastUnlockedSticker = ref('')
@@ -68,11 +68,10 @@ const defaultAvatar = '/default-avatar.png'
 
 const previewImage = ref(null)
 
-// Función para convertir la ruta relativa del avatar en URL completa con host
 const getAvatarUrl = (path) => {
   if (!path) return null
   if (path.startsWith('http')) return path
-  return `http://localhost:5000${path}`  // Cambia el puerto si es diferente
+  return `${import.meta.env.VITE_API_URL}${path}`  // Cambiado a variable de entorno
 }
 
 const getStickerUrl = (filename) => {
@@ -81,7 +80,7 @@ const getStickerUrl = (filename) => {
 
 onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:5000/api/users/profile', {
+    const res = await api.get('/api/users/profile', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -118,19 +117,17 @@ async function saveProfile() {
       formData.append('avatar', profile.value.avatarFile)
     }
 
-    await axios.put('http://localhost:5000/api/users/profile', formData, {
+    await api.put('/api/users/profile', formData, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'multipart/form-data',
       },
     })
 
-    // Traer perfil actualizado
-    const res = await axios.get('http://localhost:5000/api/users/profile', {
+    const res = await api.get('/api/users/profile', {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
 
-    // Detectar stickers nuevos
     const antiguosStickers = profile.value?.stickers?.map(s => s.name) || []
     const nuevosStickers = res.data.stickers.map(s => s.name)
     const desbloqueados = nuevosStickers.filter(name => !antiguosStickers.includes(name))
@@ -140,7 +137,7 @@ async function saveProfile() {
     }
 
     profile.value = res.data
-    previewImage.value = null // Limpiar preview para mostrar la imagen guardada
+    previewImage.value = null
 
     alert('Perfil actualizado con éxito')
   } catch (e) {

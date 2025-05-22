@@ -56,6 +56,7 @@ import TakoAssistant from "../components/TakoAssistant.vue"
 import StickerNotification from '../components/StickerNotification.vue'
 import { ref, computed, watch, onMounted } from 'vue'
 import axios from 'axios'
+import api from '../api';
 
 const takoMood = ref('default')
 const takoMessage = ref('¡Hola! ¿Listo para tus tareas?')
@@ -101,7 +102,7 @@ const fetchTasks = async () => {
   if (!token) return
 
   try {
-    const { data } = await axios.get(`http://localhost:5000/api/tasks/${formatSelectedDate.value}`, {
+    const { data } = await api.get(`/api/tasks/${formatSelectedDate.value}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     tasks.value = data
@@ -116,7 +117,7 @@ const createTask = async () => {
   if (!token) return
 
   try {
-    await axios.post('http://localhost:5000/api/tasks', {
+    await api.post('/api/tasks', {
       title: newTask.value,
       description: '',
       date: formatSelectedDate.value
@@ -135,14 +136,14 @@ const toggleComplete = async (task) => {
   if (!token) return
 
   try {
-    await axios.patch(`http://localhost:5000/api/tasks/${task._id}/complete`, {}, {
+    await api.patch(`/api/tasks/${task._id}/complete`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     })
 
     await fetchTasks()
 
     // Verificar nuevo sticker desbloqueado
-    const res = await axios.get('http://localhost:5000/api/users/profile', {
+    const res = await api.get('/api/users/profile', {
       headers: { Authorization: `Bearer ${token}` }
     })
 
@@ -168,7 +169,7 @@ const deleteTask = async (id) => {
   if (!token) return
 
   try {
-    await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
+    await api.delete(`/api/tasks/${id}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     fetchTasks()
@@ -256,6 +257,7 @@ watch(tasks, () => {
   }
 })
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');

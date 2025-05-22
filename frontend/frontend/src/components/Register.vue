@@ -16,7 +16,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
+import api from '../api'  // Importa tu cliente axios configurado con baseURL
 import { useRouter } from 'vue-router'
 
 const username = ref('')
@@ -28,7 +28,7 @@ const router = useRouter()
 const handleRegister = async () => {
   error.value = ''
   try {
-    const { data } = await axios.post('http://localhost:5000/api/auth/register', {
+    const { data } = await api.post('/api/auth/register', {
       username: username.value,
       email: email.value,
       password: password.value
