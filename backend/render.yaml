@@ -2,7 +2,9 @@ services:
   - type: web
     name: Tako-backend
     env: node
+    nodeVersion: 18.x
     branch: main
-    buildCommand: "cd backend && npm install"
-    startCommand: "cd backend && node server.js"
+    buildCommand: rimraf node_modules package-lock.json && npm install
+    startCommand: node server.js
     plan: free
+
