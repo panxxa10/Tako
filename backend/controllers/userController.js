@@ -1,13 +1,13 @@
 const Task = require('../models/Task');
 const User = require('../models/User');
 const fs = require('fs');
-const path = require('path');  // <- Asegúrate de importar el modelo User
+const path = require('path');
 
 const updateProfile = async (req, res) => {
   try {
     console.log('Cuerpo de la petición:', req.body);
     console.log('Archivo recibido:', req.file);
-    
+
     const userId = req.user.id;
 
     // Buscamos el usuario
@@ -21,24 +21,42 @@ const updateProfile = async (req, res) => {
     if (email) user.email = email;
     if (occupation) user.occupation = occupation;
 
-    // Si enviaron un archivo (avatar), guardamos la ruta y eliminamos la anterior si existe
+    // Si se subió un nuevo avatar
     if (req.file) {
-      // Ruta del avatar anterior
+      // Eliminar avatar anterior si existe
       if (user.avatar) {
-        const oldPath = path.join(__dirname, '..', user.avatar);
-        if (fs.existsSync(oldPath)) {
-          fs.unlinkSync(oldPath);
+        try {
+          // Quitar barra inicial si tiene y normalizar la ruta
+          let avatarPath = user.avatar;
+          if (avatarPath.startsWith('/') || avatarPath.startsWith('\\')) {
+            avatarPath = avatarPath.substring(1);
+          }
+          const oldPath = path.normalize(path.join(__dirname, '..', avatarPath));
+
+          console.log('Intentando eliminar avatar anterior en:', oldPath);
+
+          if (fs.existsSync(oldPath)) {
+            fs.unlinkSync(oldPath);
+            console.log('Avatar anterior eliminado correctamente');
+          } else {
+            console.log('Archivo anterior no existe, no se elimina');
+          }
+        } catch (error) {
+          console.error('Error eliminando avatar anterior:', error);
         }
       }
-      // Guardar nueva ruta
-      user.avatar = `/uploads/${req.file.filename}`;
+
+      // Guardar nueva ruta relativa
+      user.avatar = `/uploads/avatars/${req.file.filename}`;
     }
 
     await user.save();
 
-    res.json({ message: 'Perfil actualizado correctamente' });
+    // Devolver el perfil actualizado (sin password)
+    const updated = await User.findById(userId).select('-password');
+    res.json(updated);
   } catch (err) {
-    console.error(err);
+    console.error('Error en updateProfile:', err);
     res.status(500).json({ message: 'Error actualizando perfil', error: err.message });
   }
 };
@@ -94,7 +112,7 @@ const getUserStats = async (req, res) => {
   }
 };
 
-const getProfile = async (req, res) => { 
+const getProfile = async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await User.findById(userId).select('-password');
@@ -102,14 +120,12 @@ const getProfile = async (req, res) => {
 
     const tasks = await Task.find({ user: userId });
 
-    // Experiencia y nivel
     const completedTasksCount = tasks.filter(t => t.completed).length;
     const xp = completedTasksCount * 10;
     const level = Math.floor(xp / 100) + 1;
     const xpInLevel = xp % 100;
     const maxXp = 100;
 
-    // Calcular racha de días consecutivos con tareas completadas
     const grouped = {};
     tasks.forEach(task => {
       const dateStr = task.date.toISOString().split('T')[0];
@@ -130,26 +146,26 @@ const getProfile = async (req, res) => {
       }
       d.setDate(d.getDate() - 1);
     }
-    const stickers = [];
 
-if (completedTasksCount >= 1) stickers.push({ name: 'Primera tarea', img: 'primera-tarea.png' });
-if (completedTasksCount >= 10) stickers.push({ name: '10 tareas completadas', img: 'primeras10.png' });
-if (streak >= 3) stickers.push({ name: 'Racha de 3 días', img: 'racha.png' });
-if (level >= 2) stickers.push({ name: 'Nivel 2', img: 'nivel2.png' });
-if (level >= 3) stickers.push({ name: 'Nivel 3', img: 'nivel3.png' });
+    const stickers = [];
+    if (completedTasksCount >= 1) stickers.push({ name: 'Primera tarea', img: 'primera-tarea.png' });
+    if (completedTasksCount >= 10) stickers.push({ name: '10 tareas completadas', img: 'primeras10.png' });
+    if (streak >= 3) stickers.push({ name: 'Racha de 3 días', img: 'racha.png' });
+    if (level >= 2) stickers.push({ name: 'Nivel 2', img: 'nivel2.png' });
+    if (level >= 3) stickers.push({ name: 'Nivel 3', img: 'nivel3.png' });
 
     res.json({
       _id: user._id,
-      username: user.username || '',    // <-- Agregado username
-      email: user.email || '',          // <-- Agregado email
+      username: user.username || '',
+      email: user.email || '',
       name: user.name,
       occupation: user.occupation || '',
       avatar: user.avatar || '',
       completed: completedTasksCount,
       xp: xpInLevel,
-      maxXp: maxXp,
-      level: level,
-      streak: streak,
+      maxXp,
+      level,
+      streak,
       stickers,
     });
   } catch (err) {
@@ -157,5 +173,8 @@ if (level >= 3) stickers.push({ name: 'Nivel 3', img: 'nivel3.png' });
   }
 };
 
-
 module.exports = { getUserStats, getProfile, updateProfile };
+
+
+
+
