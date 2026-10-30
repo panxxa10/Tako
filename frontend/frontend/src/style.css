@@ -1,0 +1,153 @@
+@import '@fontsource-variable/nunito';
+@import '@fontsource/fredoka/500.css';
+@import '@fontsource/fredoka/600.css';
+@import '@fontsource/fredoka/700.css';
+
+/* ───────────── Sistema de diseño Tako ─────────────
+   Verde Tako (constancia y calma), cremas cálidos, acentos alegres.
+   Tipografías: Fredoka (títulos, botones) + Nunito (texto): redondas y amigables para todas las edades. */
+:root {
+  --tako-50: #EEFBF4;
+  --tako-100: #D5F5E3;
+  --tako-300: #7FDDAE;
+  --tako-500: #2EC27E;
+  --tako-600: #1FA567;
+  --tako-700: #167F4F;
+
+  --sun: #FFC24B;       /* monedas */
+  --sun-dark: #E39A1B;
+  --flame: #FF7A3D;     /* racha */
+  --sky: #4DB8FF;
+  --lilac: #8E7CFF;     /* experiencia */
+  --coral: #FF6B6B;     /* alertas */
+  --coral-soft: #FFE9E6;
+
+  --bg: #FBF8F0;
+  --surface: #FFFFFF;
+  --surface-2: #F4F0E4;
+  --ink: #1E2B27;
+  --ink-soft: #5B6B65;
+  --line: #E8E2D0;
+  --shadow: 0 2px 0 rgba(30, 43, 39, .05), 0 8px 24px rgba(30, 43, 39, .07);
+
+  --radius: 20px;
+  --radius-sm: 14px;
+  --font-display: 'Fredoka', 'Nunito Variable', system-ui, sans-serif;
+  --font-body: 'Nunito Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --tako-50: #12251E; --tako-100: #173226; --tako-300: #2D7A58; --tako-500: #3DD598; --tako-600: #2BB67F; --tako-700: #1D8A5F;
+    --coral-soft: #3A2224;
+    --bg: #0F1916; --surface: #17241F; --surface-2: #1E2F29; --ink: #EAF4EF; --ink-soft: #9DB3AA; --line: #2A3F37;
+    --shadow: 0 2px 0 rgba(0, 0, 0, .25), 0 8px 24px rgba(0, 0, 0, .3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --tako-50: #12251E; --tako-100: #173226; --tako-300: #2D7A58; --tako-500: #3DD598; --tako-600: #2BB67F; --tako-700: #1D8A5F;
+  --coral-soft: #3A2224;
+  --bg: #0F1916; --surface: #17241F; --surface-2: #1E2F29; --ink: #EAF4EF; --ink-soft: #9DB3AA; --line: #2A3F37;
+  --shadow: 0 2px 0 rgba(0, 0, 0, .25), 0 8px 24px rgba(0, 0, 0, .3);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 17px;           /* texto cómodo de leer para todas las edades */
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-tap-highlight-color: transparent;
+}
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height: 1.2; margin: 0; letter-spacing: .1px; }
+h1 { font-size: 1.9rem; } h2 { font-size: 1.45rem; } h3 { font-size: 1.15rem; }
+p { margin: 0; }
+a { color: var(--tako-600); font-weight: 700; text-decoration: none; }
+a:hover { text-decoration: underline; }
+button, input, select, textarea { font: inherit; color: inherit; }
+img, svg { max-width: 100%; }
+:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; border-radius: 8px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ── Botones (estilo "3D" suave) ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 10px 20px;
+  font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; letter-spacing: .2px;
+  border: 2px solid transparent; border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--ink); cursor: pointer;
+  transition: transform .08s ease, box-shadow .08s ease, background-color .2s ease, opacity .2s;
+}
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn-primary { background: var(--tako-500); color: #fff; box-shadow: 0 4px 0 var(--tako-700); }
+.btn-primary:hover:not(:disabled) { background: var(--tako-600); text-decoration: none; }
+.btn-primary:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--tako-700); }
+.btn-secondary { background: var(--surface); border-color: var(--line); box-shadow: 0 4px 0 var(--line); }
+.btn-secondary:hover:not(:disabled) { background: var(--surface-2); text-decoration: none; }
+.btn-secondary:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
+.btn-danger { background: var(--coral); color: #fff; box-shadow: 0 4px 0 #D94B4B; }
+.btn-danger:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #D94B4B; }
+.btn-ghost { background: transparent; color: var(--ink-soft); }
+.btn-ghost:hover:not(:disabled) { background: var(--surface-2); text-decoration: none; }
+.btn-sm { min-height: 40px; padding: 6px 14px; font-size: .95rem; }
+.btn-block { width: 100%; }
+.icon-btn {
+  display: inline-grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 12px;
+  background: transparent; color: var(--ink-soft); cursor: pointer;
+}
+.icon-btn:hover { background: var(--surface-2); color: var(--ink); }
+
+/* ── Tarjetas y formularios ── */
+.card { background: var(--surface); border: 2px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+.card-soft { background: var(--tako-50); border: 2px solid var(--tako-100); border-radius: var(--radius); padding: 18px; }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.row { display: flex; align-items: center; gap: 12px; }
+.row-wrap { display: flex; flex-wrap: wrap; gap: 10px; }
+.spacer { flex: 1; }
+.muted { color: var(--ink-soft); }
+.small { font-size: .88rem; }
+.center { text-align: center; }
+
+.field { display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: .95rem; }
+.input, .select {
+  width: 100%; min-height: 48px; padding: 10px 14px;
+  border: 2px solid var(--line); border-radius: var(--radius-sm);
+  background: var(--surface); font-weight: 600; transition: border-color .2s, box-shadow .2s;
+}
+.input::placeholder { color: var(--ink-soft); font-weight: 500; opacity: .8; }
+.input:focus, .select:focus { outline: none; border-color: var(--tako-500); box-shadow: 0 0 0 4px color-mix(in srgb, var(--tako-500) 22%, transparent); }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px;
+  background: var(--surface-2); font-weight: 800; font-size: .95rem; white-space: nowrap;
+}
+.pill-btn {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 42px; padding: 6px 14px; cursor: pointer;
+  border: 2px solid var(--line); border-radius: 999px; background: var(--surface); font-weight: 700;
+}
+.pill-btn[aria-pressed='true'], .pill-btn.active { border-color: var(--tako-500); background: var(--tako-50); color: var(--tako-700); }
+[data-theme='dark'] .pill-btn.active, [data-theme='dark'] .pill-btn[aria-pressed='true'] { color: var(--tako-500); }
+
+.form-error { color: var(--coral); font-weight: 700; }
+.form-error:empty { display: none; }
+.ok-text { color: var(--tako-600); font-weight: 700; }
+
+/* ── Animaciones suaves ── */
+@media (prefers-reduced-motion: no-preference) {
+  .pop-in { animation: pop-in .35s cubic-bezier(.3, 1.4, .5, 1) both; }
+  .slide-up { animation: slide-up .35s ease both; }
+}
+@keyframes pop-in { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
+@keyframes slide-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+.page { width: 100%; max-width: 760px; margin: 0 auto; padding: 18px 16px 110px; display: flex; flex-direction: column; gap: 18px; }
+.page-title { display: flex; align-items: center; gap: 10px; }
+@media (min-width: 900px) { .page { padding-bottom: 48px; } }
+
+.icon-coin { color: var(--sun); }

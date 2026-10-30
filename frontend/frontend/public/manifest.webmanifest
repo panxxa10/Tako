@@ -1,0 +1,14 @@
+{
+  "name": "Tako: tu compañero de tareas",
+  "short_name": "Tako",
+  "description": "Organiza tus tareas, mantén tu racha y cuida a tu tortuga.",
+  "start_url": "/hoy",
+  "display": "standalone",
+  "background_color": "#FBF8F0",
+  "theme_color": "#2EC27E",
+  "lang": "es",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -1,9 +1,33 @@
+# Blueprint de Render (opcional). Si ya tienes los servicios creados a mano en el panel de Render, no lo necesitas.
 services:
   - type: web
-    name: Tako-frontend
-    env: node
-    branch: main
-    buildCommand: "npm install && npx vite build"
-    startCommand: "npx vite preview"
-    publishPath: "frontend/frontend/dist"
+    name: tako-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
     plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false          # cadena de conexión de Neon o Supabase (solo en el panel de Render)
+      - key: JWT_SECRET
+        generateValue: true  # Render genera uno aleatorio
+      - key: CLIENT_URL
+        sync: false          # URL del frontend, ej. https://tako-frontend.onrender.com
+
+  - type: web
+    name: tako-frontend
+    runtime: static
+    rootDir: frontend/frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false          # URL del backend, ej. https://tako-backend.onrender.com

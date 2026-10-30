@@ -1,18 +1,15 @@
 const jwt = require('jsonwebtoken');
+const { jwtSecret } = require('../config/env');
 
 const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer '))
-    return res.status(401).json({ message: 'No autorizado' });
-
-  const token = authHeader.split(' ')[1];
-
+  const header = req.headers.authorization;
+  if (!header || !header.startsWith('Bearer ')) return res.status(401).json({ message: 'No autorizado' });
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { id: decoded.id, username: decoded.username };
+    const decoded = jwt.verify(header.split(' ')[1], jwtSecret);
+    req.user = { id: decoded.id };
     next();
-  } catch (err) {
-    return res.status(401).json({ message: 'Token inválido' });
+  } catch {
+    res.status(401).json({ message: 'Sesión expirada o token inválido' });
   }
 };
 
