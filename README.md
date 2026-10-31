@@ -1,6 +1,6 @@
 # 🐢 Tako — Paso a paso, todos los días
 
-🌐 **Pruébala aquí:** https://TU-URL.onrender.com
+🌐 **Pruébala aquí:** https://tako-front.onrender.com/entrar
 
 > Plan gratis: la primera carga puede tardar ~50 segundos mientras el servidor despierta.
 
